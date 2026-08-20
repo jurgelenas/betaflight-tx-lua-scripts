@@ -1,0 +1,6 @@
+# Downloaded by 'make install-luals' -- thousands of third-party Lua files, some
+# of which stylua cannot even parse.
+bin/lua-language-server/
+
+# Build output: a copy of src, so formatting it is both pointless and confusing.
+obj/

@@ -1,15 +1,27 @@
 DIR := ${CURDIR}
 SRC_DIR := src
-FMT_DIRS := src
+# bin holds the layout harness and its fixtures -- Lua we maintain, so it is
+# formatted alongside src even though it never ships.
+FMT_DIRS := src bin
 
 LUALS_VERSION := 3.17.1
 LUALS_DIR := bin/lua-language-server
 LUALS := $(LUALS_DIR)/bin/lua-language-server
 LUALS_URL := https://github.com/LuaLS/lua-language-server/releases/download/$(LUALS_VERSION)/lua-language-server-$(LUALS_VERSION)-linux-x64.tar.gz
 
+LAYOUT_GOLDEN := bin/layout.golden.csv
+LAYOUT_SD := obj/layout-sd
+# bin/layout_dump.lua runs host-side in the simulator process, not on the radio;
+# --script is just the only Lua interpreter available. gx12 boots fastest and
+# the choice does not reach the output. Kept out of `check` because it wants a
+# simulator image, which a lint job should not have to download.
+LAYOUT_ENV := BF_SRC=src BF_OUT=obj/layout.csv
+LAYOUT_SIM := edgetx-cli dev simulator --radio gx12 --headless \
+	--sdcard $(LAYOUT_SD) --script bin/layout_dump.lua --timeout 300s
+
 .PHONY: help all files clean release manifest manifest-check \
 	install-tools install-stylua install-luals \
-	format format-check typecheck check sync push
+	format format-check typecheck check layout-check layout-golden sync push
 
 help:
 	@echo "Usage: make <target>"
@@ -26,6 +38,8 @@ help:
 	@echo "  format-check    Check formatting without modifying files"
 	@echo "  typecheck       Run lua-language-server type checking"
 	@echo "  check           Run manifest-check, format-check and typecheck"
+	@echo "  layout-check    Diff page geometry against bin/layout.golden.csv (needs the simulator)"
+	@echo "  layout-golden   Recapture bin/layout.golden.csv"
 	@echo "  sync            Sync source files to EdgeTX simulator SD card"
 	@echo "  push            Install package to EdgeTX radio and eject"
 
@@ -63,6 +77,18 @@ typecheck:
 	$(LUALS) --check .
 
 check: manifest-check format-check typecheck
+
+layout-check:
+	@mkdir -p obj $(LAYOUT_SD)
+	@$(LAYOUT_ENV) BF_SUM=obj/layout.sum.csv BF_CMP=$(LAYOUT_GOLDEN) $(LAYOUT_SIM) >obj/layout.log 2>&1 \
+		|| { grep -a layout_dump obj/layout.log; exit 1; }
+	@grep -a layout_dump obj/layout.log
+
+layout-golden:
+	@mkdir -p obj $(LAYOUT_SD)
+	@$(LAYOUT_ENV) BF_SUM=$(LAYOUT_GOLDEN) $(LAYOUT_SIM) >obj/layout.log 2>&1 \
+		|| { grep -a layout_dump obj/layout.log; exit 1; }
+	@grep -a layout_dump obj/layout.log
 
 sync:
 	edgetx-cli dev sync ../edgetx-sdcard
