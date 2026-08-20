@@ -21,7 +21,7 @@ LAYOUT_SIM := edgetx-cli dev simulator --radio gx12 --headless \
 
 .PHONY: help all files clean release manifest manifest-check \
 	install-tools install-stylua install-luals \
-	format format-check typecheck check layout-check layout-golden sync push
+	format format-check typecheck check layout-check layout-golden sim-bw sim-color sync push
 
 help:
 	@echo "Usage: make <target>"
@@ -40,6 +40,8 @@ help:
 	@echo "  check           Run manifest-check, format-check and typecheck"
 	@echo "  layout-check    Diff page geometry against bin/layout.golden.csv (needs the simulator)"
 	@echo "  layout-golden   Recapture bin/layout.golden.csv"
+	@echo "  sim-bw          Screenshot the B&W tool into obj/sim/ (needs the simulator)"
+	@echo "  sim-color       Screenshot the colour tool into obj/sim-color/ (needs the simulator)"
 	@echo "  sync            Sync source files to EdgeTX simulator SD card"
 	@echo "  push            Install package to EdgeTX radio and eject"
 
@@ -83,6 +85,22 @@ layout-check:
 	@$(LAYOUT_ENV) BF_SUM=obj/layout.sum.csv BF_CMP=$(LAYOUT_GOLDEN) $(LAYOUT_SIM) >obj/layout.log 2>&1 \
 		|| { grep -a layout_dump obj/layout.log; exit 1; }
 	@grep -a layout_dump obj/layout.log
+
+sim-bw:
+	@rm -rf obj/sim obj/sim-sd
+	@mkdir -p obj/sim obj/sim-sd
+	@edgetx-cli dev simulator --radio gx12 --headless --sdcard obj/sim-sd \
+		--script bin/sim/bw.lua --timeout 120s >obj/sim.log 2>&1 \
+		|| { tail -20 obj/sim.log; exit 1; }
+	@md5sum obj/sim/*.png
+
+sim-color:
+	@rm -rf obj/sim-color obj/sim-color-sd
+	@mkdir -p obj/sim-color obj/sim-color-sd
+	@edgetx-cli dev simulator --radio "RadioMaster TX16S" --headless --sdcard obj/sim-color-sd \
+		--script bin/sim/color.lua --timeout 120s >obj/sim-color.log 2>&1 \
+		|| { tail -20 obj/sim-color.log; exit 1; }
+	@md5sum obj/sim-color/*.png
 
 layout-golden:
 	@mkdir -p obj $(LAYOUT_SD)

@@ -131,3 +131,34 @@ Be aware that these versions are intended for testing / feedback only, and may b
 - For `make release`, you also need `git` and `zip` installed
 - Run `make` from the root folder
 - The installation files will be created in the `obj` folder. Copy the files to your transmitter as instructed in the '[Installing](#installing)' section as if you unzipped from a downloaded file.
+
+### Developing
+
+Clone with `--recurse-submodules`; the type stubs `make typecheck` reads are a submodule.
+
+```
+make install-tools   # stylua and lua-language-server, into bin/
+make check           # what CI runs: manifest freshness, formatting, type checking
+make manifest        # after adding or removing a .lua file
+```
+
+Adding, removing or renaming a script under `src/` changes the list `COMPILE/compile.lua`
+walks on the radio, so `make manifest` has to be re-run and the result committed. `make check`
+fails if it is stale.
+
+Two further targets need [edgetx-cli](https://github.com/EdgeTX/edgetx-cli) and its simulator:
+
+```
+make sim-bw       # screenshot the tool on a 128x64 radio, into obj/sim/
+make sim-color    # screenshot the tool on a 480x272 radio, into obj/sim-color/
+make layout-check # diff every page's geometry against bin/layout.golden.csv
+```
+
+`layout-check` builds every page at all eight supported resolutions and every API version the
+sources branch on — 3680 combinations — and compares the coordinates and the resulting draw
+calls against a committed golden. Run it after touching anything a page's layout is computed
+from; `make layout-golden` re-captures it when a move is intended.
+
+`SCRIPTS/BFSimulator` stands in for a flight controller so the simulator gets past "Waiting for
+connection". It is marked `dev: true` in `edgetx.yml`, so it is present when developing and
+absent from anything installed on a radio.
