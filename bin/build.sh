@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# The COMPILE manifest is committed under src/, not generated here -- edgetx-cli
+# installs straight from src/ and never runs this script. Fail early if a file
+# was added or removed without re-running 'make manifest'.
+if ! bin/manifest.sh --check; then
+    exit 1
+fi
+
 if [ -d obj ]; then
     rm -fR obj/*
 else
@@ -15,18 +22,6 @@ if [ ${#MANIFEST[@]} -eq 0 ]; then
     echo -e "\e[1m\e[39m[\e[31mTEST FAILED\e[39m]\e[21m No scripts could be found!."
     exit 1
 fi
-
-SCRIPTS_LUA=obj/SCRIPTS/BF/COMPILE/scripts.lua
-
-echo 'local scripts = {' >> $SCRIPTS_LUA
-for f in ${MANIFEST[@]};
-do
-    echo '    ''"'${f/\obj/}'",' >> $SCRIPTS_LUA
-done
-echo '}' >> $SCRIPTS_LUA
-echo 'return scripts[...]' >> $SCRIPTS_LUA
-
-MANIFEST+=($SCRIPTS_LUA);
 
 for f in ${MANIFEST[@]};
 do
