@@ -4,8 +4,8 @@ local MSP_OSD_CONFIG = 84
 
 local MSP_BUILD_INFO = 5
 
-local BUILD_OPTION_GPS    = 16412
-local BUILD_OPTION_VTX    = 16421
+local BUILD_OPTION_GPS = 16412
+local BUILD_OPTION_VTX = 16421
 local BUILD_OPTION_OSD_SD = 16416
 
 local isGpsRead = false

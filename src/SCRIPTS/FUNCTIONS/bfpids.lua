@@ -3,23 +3,23 @@ chdir("/SCRIPTS/BF")
 assert(loadScript("MSP/messages.lua"))()
 
 local msg_p = {
-  intro = "p.wav",
-  readoutValues = {1, 2, 3},
+    intro = "p.wav",
+    readoutValues = { 1, 2, 3 },
 }
 
 local msg_i = {
-  intro = "i.wav",
-  readoutValues = {4, 5, 6},
+    intro = "i.wav",
+    readoutValues = { 4, 5, 6 },
 }
 
 local msg_d = {
-  intro = "d.wav",
-  readoutValues = {7, 8},
+    intro = "d.wav",
+    readoutValues = { 7, 8 },
 }
 
 local msg_dsetpt = {
-  intro = "dsetpt.wav",
-  readoutValues = {1, 2},
+    intro = "dsetpt.wav",
+    readoutValues = { 1, 2 },
 }
 
 local pidSelectorField = nil

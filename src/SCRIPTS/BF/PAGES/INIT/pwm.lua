@@ -3,7 +3,7 @@ local function precondition()
         -- BOARD_INFO is unavailable below 1.44
         return nil
     end
-    local hasBoardInfo = loadScript("BOARD_INFO/"..mcuId..".lua")
+    local hasBoardInfo = loadScript("BOARD_INFO/" .. mcuId .. ".lua")
     collectgarbage()
     if hasBoardInfo then
         return nil

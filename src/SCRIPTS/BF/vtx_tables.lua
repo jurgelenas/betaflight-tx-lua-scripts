@@ -52,9 +52,9 @@ local function processMspReply(cmd, payload, err)
         frequencyTable[receivedBand] = {}
         for channel = 1, channels do
             local frequency = 0
-            for idx=1, 2 do
+            for idx = 1, 2 do
                 local raw_val = payload[i]
-                raw_val = bit32.lshift(raw_val, (idx-1)*8)
+                raw_val = bit32.lshift(raw_val, (idx - 1) * 8)
                 frequency = bit32.bor(frequency, raw_val)
                 i = i + 1
             end
@@ -69,14 +69,14 @@ local function processMspReply(cmd, payload, err)
         i = i + 3
         local powerLabelLength = payload[i]
         i = i + 1
-        powerTable[powerLevel] = ''
+        powerTable[powerLevel] = ""
         for c = 1, powerLabelLength do
-            powerTable[powerLevel] = powerTable[powerLevel]..string.char(payload[i])
+            powerTable[powerLevel] = powerTable[powerLevel] .. string.char(payload[i])
             i = i + 1
         end
         requestedPowerLevel = requestedPowerLevel + 1
         vtxPowerTableReceived = requestedPowerLevel > vtxTableConfig.powerLevels
-    end 
+    end
 end
 
 local function getVtxTables()
@@ -95,34 +95,34 @@ local function getVtxTables()
         end
     end
     if vtxTablesReceived then
-        local f = assert(io.open("VTX_TABLES/"..mcuId..".lua", 'w'))
+        local f = assert(io.open("VTX_TABLES/" .. mcuId .. ".lua", "w"))
         io.write(f, "return {", "\n")
         io.write(f, "    frequencyTable = {", "\n")
         for i = 1, #frequencyTable do
             local frequencyString = "        { "
             for k = 1, #frequencyTable[i] do
-                frequencyString = frequencyString..tostring(frequencyTable[i][k])..", "
+                frequencyString = frequencyString .. tostring(frequencyTable[i][k]) .. ", "
             end
-            frequencyString = frequencyString.."},"
+            frequencyString = frequencyString .. "},"
             io.write(f, frequencyString, "\n")
         end
         io.write(f, "    },", "\n")
-        io.write(f, "    frequenciesPerBand = "..tostring(vtxTableConfig.channels)..",", "\n")
-        local bandString = "    bandTable = { [0]=\"U\", "
+        io.write(f, "    frequenciesPerBand = " .. tostring(vtxTableConfig.channels) .. ",", "\n")
+        local bandString = '    bandTable = { [0]="U", '
         for i = 1, #bandTable do
-            bandString = bandString.."\""..bandTable[i].."\", "
+            bandString = bandString .. '"' .. bandTable[i] .. '", '
         end
-        bandString = bandString.."},"
+        bandString = bandString .. "},"
         io.write(f, bandString, "\n")
         local powerString = "    powerTable = { "
         for i = 1, #powerTable do
-            powerString = powerString.."\""..powerTable[i].."\", "
+            powerString = powerString .. '"' .. powerTable[i] .. '", '
         end
-        powerString = powerString.."},"
+        powerString = powerString .. "},"
         io.write(f, powerString, "\n")
         io.write(f, "}", "\n")
         io.close(f)
-        assert(loadScript("VTX_TABLES/"..mcuId..".lua", 'c'))
+        assert(loadScript("VTX_TABLES/" .. mcuId .. ".lua", "c"))
     end
     mspProcessTxQ()
     processMspReply(mspPollReply())

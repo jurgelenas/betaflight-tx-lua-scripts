@@ -10,7 +10,7 @@ local function stickMovement()
     local function deflection(stick)
         return math.abs(getValue(stick) --[[@as number]])
     end
-    return deflection('ele') > threshold or deflection('ail') > threshold or deflection('rud') > threshold
+    return deflection("ele") > threshold or deflection("ail") > threshold or deflection("rud") > threshold
 end
 
 local function run(event)
@@ -35,4 +35,4 @@ local function run(event)
     return 0
 end
 
-return { init=init, run=run }
+return { init = init, run = run }

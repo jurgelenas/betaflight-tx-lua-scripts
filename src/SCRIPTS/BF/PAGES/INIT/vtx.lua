@@ -1,5 +1,5 @@
 local function precondition()
-    local hasVtxTable = loadScript("VTX_TABLES/"..mcuId..".lua")
+    local hasVtxTable = loadScript("VTX_TABLES/" .. mcuId .. ".lua")
     collectgarbage()
     if hasVtxTable then
         return nil

@@ -18,8 +18,7 @@ local status = Controller.status
 -- Editing is a property of this renderer, not of the tool: it means "the rotary
 -- is retargeted at a value". Saving lives on the Controller, because a colour
 -- UI shows it without having a mode for it.
-local pageStatus =
-{
+local pageStatus = {
     display = 1,
     editing = 2,
 }
@@ -52,11 +51,17 @@ end
 
 local function drawScreenTitle(screenTitle)
     if radio.highRes then
-        lcd.drawFilledRectangle(0, 0, LCD_W, template.lineSpacing + template.margin, COLOR_THEME_SECONDARY1 or TITLE_BGCOLOR)
-        lcd.drawText(template.margin,template.margin,screenTitle, COLOR_THEME_PRIMARY2 or MENU_TITLE_COLOR)
+        lcd.drawFilledRectangle(
+            0,
+            0,
+            LCD_W,
+            template.lineSpacing + template.margin,
+            COLOR_THEME_SECONDARY1 or TITLE_BGCOLOR
+        )
+        lcd.drawText(template.margin, template.margin, screenTitle, COLOR_THEME_PRIMARY2 or MENU_TITLE_COLOR)
     else
         lcd.drawFilledRectangle(0, 0, LCD_W, 10, FORCE)
-        lcd.drawText(1,1,screenTitle,INVERS)
+        lcd.drawText(1, 1, screenTitle, INVERS)
     end
 end
 
@@ -73,7 +78,7 @@ local function drawScreen()
     elseif currentFieldY - pageScrollY >= yMaxLim then
         pageScrollY = currentFieldY - yMaxLim
     end
-    for i=1,#Page.labels do
+    for i = 1, #Page.labels do
         local f = Page.labels[i]
         local y = f.y - pageScrollY
         if y >= 0 and y <= LCD_H then
@@ -81,7 +86,7 @@ local function drawScreen()
         end
     end
     local val = "---"
-    for i=1,#Page.fields do
+    for i = 1, #Page.fields do
         local f = Page.fields[i]
         local valueOptions = textOptions
         if i == currentField then
@@ -107,7 +112,7 @@ local function drawScreen()
             lcd.drawText(f.sp or f.x, y, val, valueOptions)
         end
     end
-    drawScreenTitle("Betaflight / "..Page.title)
+    drawScreenTitle("Betaflight / " .. Page.title)
 end
 
 local function drawPopupMenu()
@@ -116,18 +121,18 @@ local function drawPopupMenu()
     local w = radio.MenuBox.w
     local h_line = radio.MenuBox.h_line
     local h_offset = radio.MenuBox.h_offset
-    local h = #popupMenu * h_line + h_offset*2
+    local h = #popupMenu * h_line + h_offset * 2
 
-    lcd.drawFilledRectangle(x,y,w,h,backgroundFill)
-    lcd.drawRectangle(x,y,w-1,h-1,foregroundColor)
-    lcd.drawText(x+h_line/2,y+h_offset,"Menu:",globalTextOptions)
+    lcd.drawFilledRectangle(x, y, w, h, backgroundFill)
+    lcd.drawRectangle(x, y, w - 1, h - 1, foregroundColor)
+    lcd.drawText(x + h_line / 2, y + h_offset, "Menu:", globalTextOptions)
 
-    for i,e in ipairs(popupMenu) do
+    for i, e in ipairs(popupMenu) do
         local textOptions = globalTextOptions
         if popupMenuActive == i then
             textOptions = textOptions + INVERS
         end
-        lcd.drawText(x+radio.MenuBox.x_offset,y+(i-1)*h_line+h_offset,e.t,textOptions)
+        lcd.drawText(x + radio.MenuBox.x_offset, y + (i - 1) * h_line + h_offset, e.t, textOptions)
     end
 end
 
@@ -136,9 +141,14 @@ local function drawSaveBox()
     if Controller.retrying() then
         saveMsg = "Retrying"
     end
-    lcd.drawFilledRectangle(radio.SaveBox.x,radio.SaveBox.y,radio.SaveBox.w,radio.SaveBox.h,backgroundFill)
-    lcd.drawRectangle(radio.SaveBox.x,radio.SaveBox.y,radio.SaveBox.w,radio.SaveBox.h,SOLID)
-    lcd.drawText(radio.SaveBox.x+radio.SaveBox.x_offset,radio.SaveBox.y+radio.SaveBox.h_offset,saveMsg,DBLSIZE + globalTextOptions)
+    lcd.drawFilledRectangle(radio.SaveBox.x, radio.SaveBox.y, radio.SaveBox.w, radio.SaveBox.h, backgroundFill)
+    lcd.drawRectangle(radio.SaveBox.x, radio.SaveBox.y, radio.SaveBox.w, radio.SaveBox.h, SOLID)
+    lcd.drawText(
+        radio.SaveBox.x + radio.SaveBox.x_offset,
+        radio.SaveBox.y + radio.SaveBox.h_offset,
+        saveMsg,
+        DBLSIZE + globalTextOptions
+    )
 end
 
 local function drawMainMenu()
@@ -146,7 +156,7 @@ local function drawMainMenu()
     local yMinLim = radio.yMinLimit
     local yMaxLim = radio.yMaxLimit
     local lineSpacing = template.lineSpacing
-    local currentFieldY = (Controller.currentPage-1)*lineSpacing + yMinLim
+    local currentFieldY = (Controller.currentPage - 1) * lineSpacing + yMinLim
     if currentFieldY <= yMinLim then
         mainMenuScrollY = 0
     elseif currentFieldY - mainMenuScrollY <= yMinLim then
@@ -154,9 +164,9 @@ local function drawMainMenu()
     elseif currentFieldY - mainMenuScrollY >= yMaxLim then
         mainMenuScrollY = currentFieldY - yMaxLim
     end
-    for i=1, #Controller.PageFiles do
+    for i = 1, #Controller.PageFiles do
         local attr = Controller.currentPage == i and INVERS or 0
-        local y = (i-1)*lineSpacing + yMinLim - mainMenuScrollY
+        local y = (i - 1) * lineSpacing + yMinLim - mainMenuScrollY
         if y >= 0 and y <= LCD_H then
             lcd.drawText(6, y, Controller.PageFiles[i].title, attr)
         end
@@ -276,7 +286,7 @@ function UI.render(event)
         end
     end
     if not Controller.hasTelemetry() then
-        lcd.drawText(radio.NoTelem[1],radio.NoTelem[2],radio.NoTelem[3],radio.NoTelem[4])
+        lcd.drawText(radio.NoTelem[1], radio.NoTelem[2], radio.NoTelem[3], radio.NoTelem[4])
     end
     Controller.tick()
     return 0

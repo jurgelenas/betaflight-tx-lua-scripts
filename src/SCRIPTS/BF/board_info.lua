@@ -26,11 +26,11 @@ local function processMspReply(cmd, payload, err)
         local i = 1
         length = 4
         for c = 1, 4 do
-            boardIdentifier = boardIdentifier..string.char(payload[i])
+            boardIdentifier = boardIdentifier .. string.char(payload[i])
             i = i + 1
         end
         for idx = 1, 2 do
-            local raw_val = bit32.lshift(payload[i], (idx-1)*8)
+            local raw_val = bit32.lshift(payload[i], (idx - 1) * 8)
             hardwareRevision = bit32.bor(hardwareRevision, raw_val)
             i = i + 1
         end
@@ -44,7 +44,7 @@ local function processMspReply(cmd, payload, err)
             length = payload[i]
             i = i + 1
             for c = 1, length do
-                targetName = targetName..string.char(payload[i])
+                targetName = targetName .. string.char(payload[i])
                 i = i + 1
             end
         end
@@ -52,13 +52,13 @@ local function processMspReply(cmd, payload, err)
             length = payload[i]
             i = i + 1
             for c = 1, length do
-                boardName = boardName..string.char(payload[i])
+                boardName = boardName .. string.char(payload[i])
                 i = i + 1
             end
             length = payload[i]
             i = i + 1
             for c = 1, length do
-                manufacturerId = manufacturerId..string.char(payload[i])
+                manufacturerId = manufacturerId .. string.char(payload[i])
                 i = i + 1
             end
             length = 32
@@ -77,12 +77,12 @@ local function processMspReply(cmd, payload, err)
         end
         if apiVersion >= 1.43 then
             for idx = 1, 2 do
-                local raw_val = bit32.lshift(payload[i], (idx-1)*8)
+                local raw_val = bit32.lshift(payload[i], (idx - 1) * 8)
                 gyroSampleRateHz = bit32.bor(gyroSampleRateHz, raw_val)
                 i = i + 1
             end
             for idx = 1, 4 do
-                local raw_val = bit32.lshift(payload[i], (idx-1)*8)
+                local raw_val = bit32.lshift(payload[i], (idx - 1) * 8)
                 configurationProblems = bit32.bor(configurationProblems, raw_val)
                 i = i + 1
             end
@@ -106,30 +106,30 @@ local function getBoardInfo()
     mspProcessTxQ()
     processMspReply(mspPollReply())
     if boardInfoReceived then
-        local f = assert(io.open("BOARD_INFO/"..mcuId..".lua", 'w'))
+        local f = assert(io.open("BOARD_INFO/" .. mcuId .. ".lua", "w"))
         io.write(f, "return {", "\n")
-        io.write(f, "    boardIdentifier = "..'"'..boardIdentifier..'"'..",", "\n")
-        io.write(f, "    hardwareRevision = "..tostring(hardwareRevision)..",", "\n")
-        io.write(f, "    boardType = "..tostring(boardType)..",", "\n")
-        io.write(f, "    targetCapabilities = "..tostring(targetCapabilities)..",", "\n")
-        io.write(f, "    targetName = "..'"'..targetName..'"'..",", "\n")
-        io.write(f, "    boardName = "..'"'..boardName..'"'..",", "\n")
-        io.write(f, "    manufacturerId = "..'"'..manufacturerId..'"'..",", "\n")
+        io.write(f, "    boardIdentifier = " .. '"' .. boardIdentifier .. '"' .. ",", "\n")
+        io.write(f, "    hardwareRevision = " .. tostring(hardwareRevision) .. ",", "\n")
+        io.write(f, "    boardType = " .. tostring(boardType) .. ",", "\n")
+        io.write(f, "    targetCapabilities = " .. tostring(targetCapabilities) .. ",", "\n")
+        io.write(f, "    targetName = " .. '"' .. targetName .. '"' .. ",", "\n")
+        io.write(f, "    boardName = " .. '"' .. boardName .. '"' .. ",", "\n")
+        io.write(f, "    manufacturerId = " .. '"' .. manufacturerId .. '"' .. ",", "\n")
         local signatureString = "    signature = { "
         for i = 1, #signature do
-            signatureString = signatureString..tostring(signature[i])..", "
+            signatureString = signatureString .. tostring(signature[i]) .. ", "
         end
-        signatureString = signatureString.."},"
+        signatureString = signatureString .. "},"
         io.write(f, signatureString, "\n")
-        io.write(f, "    mcuTypeId = "..tostring(mcuTypeId)..",", "\n")
-        io.write(f, "    configurationState = "..tostring(configurationState)..",", "\n")
-        io.write(f, "    gyroSampleRateHz = "..tostring(gyroSampleRateHz)..",", "\n")
-        io.write(f, "    configurationProblems = "..tostring(configurationProblems)..",", "\n")
-        io.write(f, "    spiRegisteredDeviceCount = "..tostring(spiRegisteredDeviceCount)..",", "\n")
-        io.write(f, "    i2cRegisteredDeviceCount = "..tostring(i2cRegisteredDeviceCount)..",", "\n")
+        io.write(f, "    mcuTypeId = " .. tostring(mcuTypeId) .. ",", "\n")
+        io.write(f, "    configurationState = " .. tostring(configurationState) .. ",", "\n")
+        io.write(f, "    gyroSampleRateHz = " .. tostring(gyroSampleRateHz) .. ",", "\n")
+        io.write(f, "    configurationProblems = " .. tostring(configurationProblems) .. ",", "\n")
+        io.write(f, "    spiRegisteredDeviceCount = " .. tostring(spiRegisteredDeviceCount) .. ",", "\n")
+        io.write(f, "    i2cRegisteredDeviceCount = " .. tostring(i2cRegisteredDeviceCount) .. ",", "\n")
         io.write(f, "}", "\n")
         io.close(f)
-        assert(loadScript("BOARD_INFO/"..mcuId..".lua", 'c'))
+        assert(loadScript("BOARD_INFO/" .. mcuId .. ".lua", "c"))
     end
     return boardInfoReceived
 end

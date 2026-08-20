@@ -9,7 +9,7 @@ return {
         { min = 0, max = 100, scale = 1 },
         { min = 0, max = 100, scale = 1 },
         { min = 0, max = 100, scale = 1 },
-        { min = 0, max = 100, scale = 1 }
+        { min = 0, max = 100, scale = 1 },
     },
-    defaults = { 370, 370, 370, 80, 80, 80, 50, 50, 50 }
+    defaults = { 370, 370, 370, 80, 80, 80, 50, 50, 50 },
 }

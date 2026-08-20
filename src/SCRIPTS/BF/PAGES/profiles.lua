@@ -7,7 +7,16 @@ local sp = template.listSpacing.field
 local yMinLim = radio.yMinLimit
 local x = margin
 local y = yMinLim - lineSpacing
-local inc = { x = function(val) x = x + val return x end, y = function(val) y = y + val return y end }
+local inc = {
+    x = function(val)
+        x = x + val
+        return x
+    end,
+    y = function(val)
+        y = y + val
+        return y
+    end,
+}
 local labels = {}
 local fields = {}
 
@@ -15,21 +24,40 @@ local RATEPROFILE_MASK = bit32.lshift(1, 7)
 local BATTERYPROFILE_MASK = bit32.lshift(1, 6)
 local profileNumbers = { [0] = "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }
 
-fields[#fields + 1] = { t = "PID Profile", x = x, y = inc.y(lineSpacing), sp = x + sp, min = 0, max = 1, vals = { 11 }, table = profileNumbers }
-fields[#fields + 1] = { t = "Rate Profile", x = x, y = inc.y(lineSpacing), sp = x + sp, min = 0, max = 5, vals = { 15 }, table = profileNumbers }
+fields[#fields + 1] = {
+    t = "PID Profile",
+    x = x,
+    y = inc.y(lineSpacing),
+    sp = x + sp,
+    min = 0,
+    max = 1,
+    vals = { 11 },
+    table = profileNumbers,
+}
+fields[#fields + 1] = {
+    t = "Rate Profile",
+    x = x,
+    y = inc.y(lineSpacing),
+    sp = x + sp,
+    min = 0,
+    max = 5,
+    vals = { 15 },
+    table = profileNumbers,
+}
 if apiVersion >= 1.48 then
-    fields[#fields + 1] = { t = "Battery Profile", x = x, y = inc.y(lineSpacing), sp = x + sp, min = 0, max = 2, table = profileNumbers }
+    fields[#fields + 1] =
+        { t = "Battery Profile", x = x, y = inc.y(lineSpacing), sp = x + sp, min = 0, max = 2, table = profileNumbers }
 end
 
 return {
-    read        = 150, -- MSP_STATUS_EX
-    write       = 210, -- MSP_SELECT_SETTING
-    title       = "Profiles",
-    reboot      = false,
+    read = 150, -- MSP_STATUS_EX
+    write = 210, -- MSP_SELECT_SETTING
+    title = "Profiles",
+    reboot = false,
     eepromWrite = true,
-    minBytes    = 11,
-    labels      = labels,
-    fields      = fields,
+    minBytes = 11,
+    labels = labels,
+    fields = fields,
     pidProfile = 0,
     batteryProfile = 0,
     postLoad = function(self)

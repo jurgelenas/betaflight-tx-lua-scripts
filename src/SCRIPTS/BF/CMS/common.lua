@@ -4,13 +4,13 @@ local CONST = {
         lastChunk = 0x40,
         batchId = 0x3F,
         rleCharValueMask = 0x7F,
-        rleCharRepeatedMask = 0x80
+        rleCharRepeatedMask = 0x80,
     },
     offset = {
         meta = 1,
         sequence = 2,
-        data = 3
-    }
+        data = 3,
+    },
 }
 
 local function cRleDecode(buf)
@@ -18,9 +18,9 @@ local function cRleDecode(buf)
     local rpt = false
     local c = nil
     for i = 1, #buf do
-        if (rpt == false) then
+        if rpt == false then
             c = bit32.band(buf[i], CONST.bitmask.rleCharValueMask)
-            if (bit32.band(buf[i], CONST.bitmask.rleCharRepeatedMask) > 0) then
+            if bit32.band(buf[i], CONST.bitmask.rleCharRepeatedMask) > 0 then
                 rpt = true
             else
                 dest[#dest + 1] = c
@@ -49,9 +49,14 @@ screen = {
     end,
     draw = function()
         lcd.clear()
-        lcd.drawText(screen.config.refresh.left, screen.config.refresh.top, screen.config.refresh.text, screen.config.textSize)
+        lcd.drawText(
+            screen.config.refresh.left,
+            screen.config.refresh.top,
+            screen.config.refresh.text,
+            screen.config.textSize
+        )
         for char = 1, #screen.buffer do
-            if (screen.buffer[char] ~= 32) then -- skip spaces to avoid CPU spikes
+            if screen.buffer[char] ~= 32 then -- skip spaces to avoid CPU spikes
                 local c = string.char(screen.buffer[char])
                 local row = math.ceil(char / screen.config.cols)
                 local col = char - ((row - 1) * screen.config.cols)
@@ -66,7 +71,7 @@ screen = {
 cms = {
     menuOpen = false,
     synced = false,
-    init = function(cmsConfig) 
+    init = function(cmsConfig)
         screen.config = assert(cmsConfig, "Resolution not supported")
         screen.reset()
         protocol.cms.close()
@@ -85,7 +90,7 @@ cms = {
     end,
     update = function()
         local command, data = protocol.cms.poll()
-        if (command == "update") then
+        if command == "update" then
             local firstChunk = bit32.btest(data[CONST.offset.meta], CONST.bitmask.firstChunk)
             local lastChunk = bit32.btest(data[CONST.offset.meta], CONST.bitmask.lastChunk)
             local batchId = bit32.band(data[CONST.offset.meta], CONST.bitmask.batchId)
@@ -110,12 +115,12 @@ cms = {
                 protocol.cms.refresh()
             end
             cms.menuOpen = true
-        elseif (command == "clear") then
+        elseif command == "clear" then
             screen.reset()
         end
         if screen.redraws > 0 then
             screen.draw()
             screen.redraws = screen.redraws - 1
         end
-    end    
+    end,
 }

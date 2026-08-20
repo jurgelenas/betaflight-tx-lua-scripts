@@ -1,6 +1,6 @@
 -- Protocol version
-local MSP_VERSION = bit32.lshift(1,5)
-local MSP_STARTFLAG = bit32.lshift(1,4)
+local MSP_VERSION = bit32.lshift(1, 5)
+local MSP_STARTFLAG = bit32.lshift(1, 4)
 
 -- Sequence number for next MSP packet
 local mspSeq = 0
@@ -17,7 +17,7 @@ local mspTxIdx = 1
 local mspTxCRC = 0
 
 function mspProcessTxQ()
-    if (#(mspTxBuf) == 0) then
+    if #mspTxBuf == 0 then
         return false
     end
     if not protocol.push() then
@@ -34,7 +34,7 @@ function mspProcessTxQ()
     while (i <= protocol.maxTxBufferSize) and mspTxIdx <= #mspTxBuf do
         payload[i] = mspTxBuf[mspTxIdx]
         mspTxIdx = mspTxIdx + 1
-        mspTxCRC = bit32.bxor(mspTxCRC,payload[i])  
+        mspTxCRC = bit32.bxor(mspTxCRC, payload[i])
         i = i + 1
     end
     if i <= protocol.maxTxBufferSize then
@@ -51,13 +51,13 @@ end
 
 function mspSendRequest(cmd, payload)
     -- busy
-    if #(mspTxBuf) ~= 0 or not cmd then
+    if #mspTxBuf ~= 0 or not cmd then
         return nil
     end
-    mspTxBuf[1] = #(payload)
-    mspTxBuf[2] = bit32.band(cmd,0xFF)  -- MSP command
-    for i=1,#(payload) do
-        mspTxBuf[i+2] = bit32.band(payload[i],0xFF)
+    mspTxBuf[1] = #payload
+    mspTxBuf[2] = bit32.band(cmd, 0xFF) -- MSP command
+    for i = 1, #payload do
+        mspTxBuf[i + 2] = bit32.band(payload[i], 0xFF)
     end
     mspLastReq = cmd
     return mspProcessTxQ()
@@ -115,6 +115,6 @@ function mspPollReply()
         elseif mspReceivedReply(mspData) then
             mspLastReq = 0
             return mspRxReq, mspRxBuf, mspRxError
-        end     
+        end
     end
 end

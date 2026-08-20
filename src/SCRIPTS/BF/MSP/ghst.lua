@@ -3,9 +3,9 @@
 ---@diagnostic disable: duplicate-set-field
 
 -- GHST Frame Types
-local GHST_FRAMETYPE_MSP_REQ    = 0x21
-local GHST_FRAMETYPE_MSP_WRITE  = 0x22
-local GHST_FRAMETYPE_MSP_RESP   = 0x28
+local GHST_FRAMETYPE_MSP_REQ = 0x21
+local GHST_FRAMETYPE_MSP_WRITE = 0x22
+local GHST_FRAMETYPE_MSP_RESP = 0x28
 
 local ghstMspType = 0
 

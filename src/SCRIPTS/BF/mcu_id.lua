@@ -12,10 +12,10 @@ local function processMspReply(cmd, payload, err)
         for j = 1, 3 do
             local s = ""
             for k = 1, 4 do
-                s = string.format("%02x", payload[i])..s
+                s = string.format("%02x", payload[i]) .. s
                 i = i + 1
             end
-            id = id..s
+            id = id .. s
         end
         mcuId = id
         MCUIdReceived = true

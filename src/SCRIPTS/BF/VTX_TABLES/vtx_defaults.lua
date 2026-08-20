@@ -7,5 +7,5 @@ return {
         { 5658, 5695, 5732, 5769, 5806, 5843, 5880, 5917 }, -- RaceBand
     },
     frequenciesPerBand = 8,
-    bandTable = { [0]="U", "A", "B", "E", "F", "R" },
+    bandTable = { [0] = "U", "A", "B", "E", "F", "R" },
 }

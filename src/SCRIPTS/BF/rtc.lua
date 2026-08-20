@@ -4,7 +4,7 @@ local timeIsSet = false
 local lastRunTS = 0
 local INTERVAL = 50
 
-local function processMspReply(cmd,rx_buf,err)
+local function processMspReply(cmd, rx_buf, err)
     if cmd == MSP_SET_RTC and not err then
         timeIsSet = true
     end

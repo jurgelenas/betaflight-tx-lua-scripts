@@ -2,11 +2,11 @@
 -- protocols.lua loads exactly one of them per session.
 ---@diagnostic disable: duplicate-set-field
 
-local LOCAL_SENSOR_ID  = 0x0D
+local LOCAL_SENSOR_ID = 0x0D
 local SMARTPORT_REMOTE_SENSOR_ID = 0x1B
 local FPORT_REMOTE_SENSOR_ID = 0x00
 local REQUEST_FRAME_ID = 0x30
-local REPLY_FRAME_ID   = 0x32
+local REPLY_FRAME_ID = 0x32
 
 local lastSensorId, lastFrameId, lastDataId, lastValue
 
@@ -33,7 +33,12 @@ local function smartPortTelemetryPop()
         local sensorId, frameId, dataId, value = sportTelemetryPop()
         if not sensorId then
             return nil
-        elseif (lastSensorId == sensorId) and (lastFrameId == frameId) and (lastDataId == dataId) and (lastValue == value) then
+        elseif
+            (lastSensorId == sensorId)
+            and (lastFrameId == frameId)
+            and (lastDataId == dataId)
+            and (lastValue == value)
+        then
             -- Keep checking
         else
             lastSensorId = sensorId
@@ -48,7 +53,12 @@ end
 protocol.mspPoll = function()
     while true do
         local sensorId, frameId, dataId, value = smartPortTelemetryPop()
-        if (sensorId == SMARTPORT_REMOTE_SENSOR_ID or sensorId == FPORT_REMOTE_SENSOR_ID) and frameId == REPLY_FRAME_ID and dataId and value then
+        if
+            (sensorId == SMARTPORT_REMOTE_SENSOR_ID or sensorId == FPORT_REMOTE_SENSOR_ID)
+            and frameId == REPLY_FRAME_ID
+            and dataId
+            and value
+        then
             local payload = {}
             payload[1] = bit32.band(dataId, 0xFF)
             dataId = bit32.rshift(dataId, 8)
