@@ -1,0 +1,56 @@
+package:
+  id: github.com/EdgeTX-packages/betaflight-tx-lua-scripts
+  name: "Betaflight TX Lua Scripts"
+  description: Betaflight flight controller configuration scripts for EdgeTX
+  authors:
+    - name: Betaflight contributors
+  urls:
+    - name: Homepage
+      url: "https://betaflight.com"
+    - name: Repository
+      url: "https://github.com/EdgeTX-packages/betaflight-tx-lua-scripts"
+  screenshots:
+    - screenshots/tool_mainmenu.png
+    - screenshots/tool_page.png
+    - screenshots/tool_actions.png
+    - screenshots/tool_mainmenu_bw.png
+    - screenshots/tool_page_bw.png
+    - screenshots/tool_menu_bw.png
+  keywords:
+    - betaflight
+    - msp
+    - flight-controller
+  license: GPL-3.0-only
+  source_dir: src
+
+libraries:
+  - name: BF
+    path: SCRIPTS/BF
+
+  - name: BFSimulator
+    path: SCRIPTS/BFSimulator
+    dev: true
+
+tools:
+  - name: bf
+    path: SCRIPTS/TOOLS/bf.lua
+    depends:
+      - BF
+  - name: bfCms
+    path: SCRIPTS/TOOLS/bfCms.lua
+    depends:
+      - BF
+
+functions:
+  - name: bfbkgd
+    path: SCRIPTS/FUNCTIONS/bfbkgd.lua
+    depends:
+      - BF
+  - name: bfpids
+    path: SCRIPTS/FUNCTIONS/bfpids.lua
+    depends:
+      - BF
+
+sounds:
+  - name: sounds-en
+    path: SOUNDS/en

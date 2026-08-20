@@ -38,12 +38,12 @@ local UI
 --- Called once, before the first frame. Everything loads here rather than at
 --- chunk scope so the work happens after the tool is on screen.
 local function init()
-    -- Stand in for a flight controller when there is none. Nothing loads
-    -- unless getVersion() says this is the simulator, so a radio never runs
-    -- any of it, and loadScript returns nil on a card that does not carry
-    -- the mock. It goes first because protocols.lua asserts when it finds no
-    -- telemetry module, and returns a second pass to run once MSP/common.lua
-    -- has defined the globals it wants to replace.
+    -- Stand in for a flight controller when there is none. edgetx.yml marks
+    -- SCRIPTS/BFSimulator `dev: true`, so it is absent on a radio and this
+    -- loadScript returns nil; the getVersion check keeps it out of the way
+    -- even on a card that has it. It goes first because protocols.lua asserts
+    -- when it finds no telemetry module, and returns a second pass to run once
+    -- MSP/common.lua has defined the globals it wants to replace.
     local applyMock
     local _, rv = getVersion()
     if string.sub(rv, -5) == "-simu" then

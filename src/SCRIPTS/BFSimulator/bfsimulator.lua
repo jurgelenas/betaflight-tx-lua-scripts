@@ -13,8 +13,8 @@
 -- byte stream underneath it would be a second implementation of it to keep in
 -- step for no extra coverage of the UI.
 --
--- bf.lua only ever loads this in the simulator -- it checks that getVersion()
--- ends in "-simu" first -- so on a radio the file just sits on the card.
+-- edgetx.yml marks SCRIPTS/BFSimulator `dev: true`, so `pkg install` leaves it
+-- off a real radio and the loadScript in bf.lua returns nil there.
 --
 -- Applied in two passes, because they have to straddle other loads. Calling
 -- this module fakes the telemetry module, which protocols.lua probes for and
