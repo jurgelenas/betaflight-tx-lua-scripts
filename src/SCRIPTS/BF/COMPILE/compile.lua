@@ -12,7 +12,7 @@ local function compile()
         collectgarbage()
         return 0
     end
-    local file = io.open("COMPILE/scripts_compiled.lua", 'w')
+    local file = assert(io.open("COMPILE/scripts_compiled.lua", 'w'))
     io.write(file, "return true")
     io.close(file)
     assert(loadScript("COMPILE/scripts_compiled.lua", 'c'))

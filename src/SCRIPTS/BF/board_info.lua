@@ -106,7 +106,7 @@ local function getBoardInfo()
     mspProcessTxQ()
     processMspReply(mspPollReply())
     if boardInfoReceived then
-        local f = io.open("BOARD_INFO/"..mcuId..".lua", 'w')
+        local f = assert(io.open("BOARD_INFO/"..mcuId..".lua", 'w'))
         io.write(f, "return {", "\n")
         io.write(f, "    boardIdentifier = "..'"'..boardIdentifier..'"'..",", "\n")
         io.write(f, "    hardwareRevision = "..tostring(hardwareRevision)..",", "\n")

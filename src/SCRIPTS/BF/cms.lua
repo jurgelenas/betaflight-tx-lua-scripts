@@ -7,7 +7,10 @@ end
 
 local function stickMovement()
     local threshold = 30
-    return math.abs(getValue('ele')) > threshold or math.abs(getValue('ail')) > threshold or math.abs(getValue('rud')) > threshold
+    local function deflection(stick)
+        return math.abs(getValue(stick) --[[@as number]])
+    end
+    return deflection('ele') > threshold or deflection('ail') > threshold or deflection('rud') > threshold
 end
 
 local function run(event)

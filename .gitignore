@@ -48,3 +48,7 @@ luac.out
 # Directories
 tmp
 obj
+release
+
+# Downloaded by 'make install-luals'. The rest of bin/ is tracked.
+bin/lua-language-server/

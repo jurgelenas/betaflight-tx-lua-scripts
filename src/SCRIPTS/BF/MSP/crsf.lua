@@ -1,3 +1,7 @@
+-- crsf.lua, ghst.lua and sp.lua each fill in the same global `protocol` table;
+-- protocols.lua loads exactly one of them per session.
+---@diagnostic disable: duplicate-set-field
+
 -- CRSF Devices
 local CRSF_ADDRESS_BETAFLIGHT          = 0xC8
 local CRSF_ADDRESS_RADIO_TRANSMITTER   = 0xEA
@@ -29,7 +33,7 @@ end
 protocol.mspPoll = function()
     while true do
         local cmd, data = crossfireTelemetryPop()
-        if cmd == CRSF_FRAMETYPE_MSP_RESP and data[1] == CRSF_ADDRESS_RADIO_TRANSMITTER and data[2] == CRSF_ADDRESS_BETAFLIGHT then
+        if cmd == CRSF_FRAMETYPE_MSP_RESP and data and data[1] == CRSF_ADDRESS_RADIO_TRANSMITTER and data[2] == CRSF_ADDRESS_BETAFLIGHT then
             local mspData = {}
             for i = 3, #data do
                 mspData[i - 2] = data[i]

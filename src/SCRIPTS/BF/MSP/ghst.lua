@@ -1,3 +1,7 @@
+-- crsf.lua, ghst.lua and sp.lua each fill in the same global `protocol` table;
+-- protocols.lua loads exactly one of them per session.
+---@diagnostic disable: duplicate-set-field
+
 -- GHST Frame Types
 local GHST_FRAMETYPE_MSP_REQ    = 0x21
 local GHST_FRAMETYPE_MSP_WRITE  = 0x22

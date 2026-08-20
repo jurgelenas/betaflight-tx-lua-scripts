@@ -1,3 +1,7 @@
+-- crsf.lua, ghst.lua and sp.lua each fill in the same global `protocol` table;
+-- protocols.lua loads exactly one of them per session.
+---@diagnostic disable: duplicate-set-field
+
 local LOCAL_SENSOR_ID  = 0x0D
 local SMARTPORT_REMOTE_SENSOR_ID = 0x1B
 local FPORT_REMOTE_SENSOR_ID = 0x00
@@ -44,7 +48,7 @@ end
 protocol.mspPoll = function()
     while true do
         local sensorId, frameId, dataId, value = smartPortTelemetryPop()
-        if (sensorId == SMARTPORT_REMOTE_SENSOR_ID or sensorId == FPORT_REMOTE_SENSOR_ID) and frameId == REPLY_FRAME_ID then
+        if (sensorId == SMARTPORT_REMOTE_SENSOR_ID or sensorId == FPORT_REMOTE_SENSOR_ID) and frameId == REPLY_FRAME_ID and dataId and value then
             local payload = {}
             payload[1] = bit32.band(dataId, 0xFF)
             dataId = bit32.rshift(dataId, 8)

@@ -90,7 +90,6 @@ return {
     minBytes    = 12,
     labels      = labels,
     fields      = fields,
-    ratesType,
     getRatesType = function(self)
         for i = 1, #self.fields do
             if self.fields[i].vals and self.fields[i].vals[1] == 23 then

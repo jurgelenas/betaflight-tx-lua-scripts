@@ -29,7 +29,10 @@ local function init_pids()
 end
 
 local function run_pids()
-    local pidSelector = getValue(pidSelectorField.id)
+    if not pidSelectorField then
+        return
+    end
+    local pidSelector = getValue(pidSelectorField.id) --[[@as number]]
     if pidSelector > 33 and pidSelector < 99 then
         readoutMsp(MSP_PID_FORMAT, msg_p)
     elseif pidSelector > 99 and pidSelector < 165 then

@@ -95,7 +95,7 @@ local function getVtxTables()
         end
     end
     if vtxTablesReceived then
-        local f = io.open("VTX_TABLES/"..mcuId..".lua", 'w')
+        local f = assert(io.open("VTX_TABLES/"..mcuId..".lua", 'w'))
         io.write(f, "return {", "\n")
         io.write(f, "    frequencyTable = {", "\n")
         for i = 1, #frequencyTable do
